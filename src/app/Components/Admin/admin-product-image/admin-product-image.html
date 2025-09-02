@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Manage Product Images</h2>
+
+  <!-- Add / Edit Form -->
+  <div class="card p-3 mb-4">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label>Product</label>
+        <select class="form-select" [(ngModel)]="newImage.product_id" name="product_id">
+          <option value="">Select Product</option>
+          <option *ngFor="let p of products" [value]="p.product_id">{{ p.name }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label>Variant</label>
+        <select class="form-select" [(ngModel)]="newImage.variant_id" name="variant_id">
+          <option value="">Select Variant</option>
+          <option *ngFor="let v of filteredVariants()" [value]="v.variant_id">{{ v.sku }} | {{ v.size_id }} | {{ v.color_id }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label>Image URL</label>
+        <input type="text" class="form-control" [(ngModel)]="newImage.image_url" name="image_url" />
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <button class="btn btn-success me-2" (click)="saveImage()">{{ editMode ? 'Update' : 'Add' }} Image</button>
+      <button class="btn btn-secondary" (click)="resetForm()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Product Images Table -->
+  <table class="table table-bordered table-hover">
+    <thead class="table-light text-center">
+      <tr>
+        <th>ID</th>
+        <th>Product</th>
+        <th>Variant</th>
+        <th>Image</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let img of productImages">
+        <td>{{ img.image_id }}</td>
+        <td>{{ getProductName(img.product_id) }}</td>
+<td>{{ getVariantSku(img.variant_id) }}</td>
+
+        <td>
+          <img [src]="img.image_url" width="80" height="80" *ngIf="img.image_url" />
+        </td>
+        <td>{{ img.created_at }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-warning me-2" (click)="editImage(img)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteImage(img.image_id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,48 @@
+.profile-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Header gradient */
+.card-header-gradient {
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+}
+
+/* Avatar */
+.avatar {
+  width: 50px;
+  height: 50px;
+  font-size: 2rem;
+  box-shadow: 0 5px 15px rgba(78, 84, 200, 0.4);
+}
+
+/* Info items */
+.info-item {
+  margin-bottom: 1rem;
+}
+.info-icon {
+  font-size: 1rem;
+  color: #4e54c8;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+/* Buttons */
+.btn-modern {
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+}
+.btn-edit {
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  border: none;
+  color: #fff;
+}
+.btn-edit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(78, 84, 200, 0.4);
+}

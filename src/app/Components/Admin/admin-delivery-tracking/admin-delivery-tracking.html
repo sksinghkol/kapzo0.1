@@ -1,0 +1,68 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Delivery Tracking Management</h2>
+
+  <!-- Add / Edit Form -->
+  <div class="card p-3 mb-4">
+    <div class="row g-3">
+
+      <div class="col-md-3">
+        <label>Booking ID</label>
+        <select class="form-select" [(ngModel)]="newTracking.booking_id" name="booking_id" required>
+          <option value="">Select Booking</option>
+          <option *ngFor="let b of bookings" [value]="b.booking_id">{{ b.booking_id }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label>Status</label>
+        <select class="form-select" [(ngModel)]="newTracking.status" name="status" required>
+          <option value="">Select Status</option>
+          <option *ngFor="let s of statuses" [value]="s">{{ formatStatus(s) }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label>Description</label>
+        <input type="text" class="form-control" [(ngModel)]="newTracking.description" name="description" required />
+      </div>
+
+      <div class="col-md-3">
+        <label>Timestamp</label>
+        <input type="datetime-local" class="form-control" [(ngModel)]="newTracking.tracking_timestamp" name="tracking_timestamp" required />
+      </div>
+
+    </div>
+
+    <div class="mt-3">
+      <button class="btn btn-success me-2" (click)="saveTracking()">{{ editMode ? 'Update' : 'Add' }}</button>
+      <button class="btn btn-secondary" (click)="resetForm()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Tracking Table -->
+  <table class="table table-bordered table-hover">
+    <thead class="table-light text-center">
+      <tr>
+        <th>ID</th>
+        <th>Booking ID</th>
+        <th>Status</th>
+        <th>Description</th>
+        <th>Timestamp</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of trackingList">
+        <td>{{ t.tracking_id }}</td>
+        <td>{{ getBookingName(t.booking_id) }}</td>
+        <td>{{ formatStatus(t.status) }}</td>
+        <td>{{ t.description }}</td>
+        <td>{{ t.tracking_timestamp }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-warning me-2" (click)="editTracking(t)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteTracking(t.tracking_id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

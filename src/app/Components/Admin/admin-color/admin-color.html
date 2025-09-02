@@ -1,0 +1,78 @@
+<div class="container py-4">
+
+  <h2 class="mb-3 text-primary">🎨 Manage Colors</h2>
+
+  <!-- Add Color Form -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Add New Color</h5>
+      <form (ngSubmit)="addColor()" class="row g-3">
+        <div class="col-md-5">
+          <input type="text" [(ngModel)]="newColor.color_name" name="color_name"
+                 placeholder="Color Name" class="form-control" required>
+        </div>
+        <div class="col-md-5">
+          <input type="color" [(ngModel)]="newColor.hex_code" name="hex_code"
+                 class="form-control form-control-color">
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-success w-100" type="submit">➕ Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Color Form -->
+  <div *ngIf="editColorData" class="card shadow-sm mb-4 border-warning">
+    <div class="card-body">
+      <h5 class="card-title text-warning">✏️ Edit Color</h5>
+      <form (ngSubmit)="updateColor()" class="row g-3">
+        <div class="col-md-5">
+          <input type="text" [(ngModel)]="editColorData.color_name" name="edit_color_name"
+                 class="form-control" required>
+        </div>
+        <div class="col-md-5">
+          <input type="color" [(ngModel)]="editColorData.hex_code" name="edit_hex_code"
+                 class="form-control form-control-color">
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+          <button class="btn btn-primary w-50" type="submit">💾 Save</button>
+          <button class="btn btn-secondary w-50" type="button" (click)="editColorData=null">❌ Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Colors Table -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Available Colors</h5>
+      <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Color Name</th>
+            <th>Preview</th>
+            <th>Hex Code</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let color of colors">
+            <td>{{ color.color_id }}</td>
+            <td>{{ color.color_name }}</td>
+            <td>
+              <div class="color-box" [style.background]="color.hex_code"></div>
+            </td>
+            <td>{{ color.hex_code }}</td>
+            <td>
+              <button class="btn btn-sm btn-warning me-2" (click)="editColor(color)">✏️ Edit</button>
+              <button class="btn btn-sm btn-danger" (click)="deleteColor(color.color_id)">🗑 Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

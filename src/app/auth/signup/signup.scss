@@ -1,0 +1,74 @@
+
+.signup-card {
+  max-width: 480px;
+  margin: 80px auto;
+  padding: 2.5rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  h2 {
+    font-weight: 700;
+    color: #1e40af;
+    background: linear-gradient(45deg, #2563eb, #60a5fa);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #1e3a8a;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    box-shadow: none;
+    transition: 0.2s ease;
+
+    &:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25);
+    }
+  }
+
+  .btn-primary {
+    border-radius: 50px;
+    background: #10b981;
+    border: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+
+.home-btn {
+  background: #dfa1f8;
+  border-radius: 30px;
+  padding: 0.5rem 2.2rem;
+  color: #fff !important;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+  transition: 0.3s;
+  margin-left: 2px;
+  
+}
+
+.home-btn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}

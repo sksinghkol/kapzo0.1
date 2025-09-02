@@ -1,0 +1,79 @@
+<!-- Store Section -->
+<div class="store-section py-4">
+  <div class="container">
+    <div class="row justify-content-center g-3">
+      <!-- Store Card -->
+      <div class="col-12 col-md-6 col-lg-5"
+           *ngFor="let store of stores; trackBy: trackByStore">
+        <div class="card store-card border-0 shadow-sm animate__animated animate__fadeIn">
+          <div class="card-body p-3">
+            
+            <!-- Row 1: Image | Name -->
+            <div class="d-flex align-items-center gap-3">
+              <!-- Profile Image -->
+              <img [src]="getDriveImageUrl(store.profile_image || 'https://randomuser.me/api/portraits/women/64.jpg')"
+                   class="rounded-circle profile-img border border-light"
+                   [alt]="'Store Owner ' + store.owner_name"
+                   (error)="onImageError($event, 'store-' + store.store_id)" />
+
+              <!-- Store Info -->
+              <div class="flex-grow-1">
+                <h6 class="store-title fw-bold mb-1">
+                  🏬 {{ store.store_name }}
+                </h6>
+                <small class="text-muted">👤 {{ store.owner_name }}</small>
+              </div>
+            </div>
+
+            <!-- Contact + Address -->
+            <div class="small text-muted mt-2">
+              📞 {{ maskPhone(store.owner_phone) }} <br>
+              ✉️ {{ store.owner_email }} <br>
+              📍 {{ store.local_area }}, {{ store.city }}
+            </div>
+
+            <!-- Description -->
+            <div class="mt-2">
+              <p class="store-description text-muted mb-1" 
+                 [class.collapsed]="expandedStoreId !== store.store_id">
+                {{ store.description }}
+              </p>
+              <button class="btn btn-xs btn-gradient" (click)="toggleStore(store.store_id)">
+                {{ expandedStoreId === store.store_id ? 'Less' : 'More' }}
+              </button>
+            </div>
+
+            <!-- Service Areas -->
+            <div class="service-section mt-3">
+              <h6 class="fw-semibold text-dark small mb-2">
+                <i class="fas fa-truck me-1 text-primary"></i> Service Areas
+              </h6>
+              <div class="d-flex flex-column gap-2">
+                <div class="location-badge d-flex align-items-center justify-content-between p-2 rounded shadow-sm"
+                     *ngFor="let loc of getStoreDeliveryLocations(store.store_id); trackBy: trackByLocation"
+                     [ngClass]="loc.is_store_pickup ? 'bg-light border border-success' : 'bg-light border border-danger'">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-map-marker-alt text-primary"></i>
+                    <span class="fw-semibold">{{ loc.location_name }}</span>
+                  </div>
+                  <span class="small fw-medium"
+                        [ngClass]="loc.is_store_pickup ? 'text-success' : 'text-danger'">
+                    {{ loc.is_store_pickup ? '✅ Pickup Available' : '❌ No Pickup' }}
+                  </span>
+                  <p class="location-desc text-muted small mb-0 mt-1">
+                    {{ loc.description }}
+                  </p>
+                </div>
+              </div>
+            </div><!-- /service-section -->
+
+          </div>
+        </div>
+      </div><!-- /col -->
+    </div><!-- /row -->
+  </div>
+</div>
+
+
+
+

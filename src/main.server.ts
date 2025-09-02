@@ -1,7 +1,15 @@
+// src/main.server.ts
 import { bootstrapApplication } from '@angular/platform-browser';
 import { App } from './app/app';
-import { config } from './app/app.config.server';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
+import { routes } from './app/app.routes';
 
-const bootstrap = () => bootstrapApplication(App, config);
-
-export default bootstrap;
+export default function () {
+  return bootstrapApplication(App, {
+    providers: [
+      provideHttpClient(withFetch()),
+      provideRouter(routes),
+    ],
+  });
+}
