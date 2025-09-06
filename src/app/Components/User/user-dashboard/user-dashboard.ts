@@ -9,5 +9,5 @@ import { UserMenu } from '../user-menu/user-menu';
   styleUrl: './user-dashboard.scss'
 })
 export class UserDashboard {
-cartItemCount = 3;
+
 }

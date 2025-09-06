@@ -1,0 +1,12 @@
+<!-- store-list.component.html -->
+<div *ngFor="let store of stores">
+  <h2 (click)="selectStore(store.id)">{{ store.name }}</h2>
+</div>
+
+<div *ngFor="let product of products">
+  <h3>{{ product.name }}</h3>
+  <p>Categories: {{ product.categories.join(', ') }}</p>
+  <p>Colors: {{ product.colors.join(', ') }}</p>
+  <p>Price: ₹{{ product.price }}</p>
+</div>
+

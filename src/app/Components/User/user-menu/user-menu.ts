@@ -1,27 +1,38 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { AuthService } from './../../../core/services/auth.service';
+import { Router, RouterModule } from '@angular/router';
+import { FirebaseService } from './../../../services/firebase.service';
+
 @Component({
   selector: 'app-user-menu',
-  standalone: true,
-  imports: [CommonModule, RouterLink ],
+  imports: [CommonModule, RouterModule],
   templateUrl: './user-menu.html',
   styleUrl: './user-menu.scss'
 })
 export class UserMenu implements OnInit {
-  cartItemCount = 3;
+  username: string | null = null;
+  photoURL: string | null = null;
+  phoneNumber: string | null = null;
+  cartItemCount = 0;
 
-  username: string = 'Guest';
-  phoneNumber: string = '';
-
-  constructor(private auth: AuthService) {} // ✅ inject AuthService
+  constructor(private fb: FirebaseService, private router: Router) {}
 
   ngOnInit(): void {
-    const user = this.auth.getUser();
-    if (user) {
-      this.username = user.username;
-      this.phoneNumber = user.phone_number;
-    }
+    // ✅ Listen for auth changes
+    this.fb.getCurrentUser().then(user => {
+      if (user) {
+        this.username = user.displayName || user.email?.split('@')[0] || 'User';
+        this.photoURL = user.photoURL || 'https://dummyimage.com/400x400/444444/d3d3d3.png';
+        this.phoneNumber = user.phoneNumber || '';
+      }
+    });
+  }
+
+  async logout() {
+    await this.fb.logout();
+    this.username = null;
+    this.photoURL = null;
+    this.router.navigate(['/login']);
   }
 }

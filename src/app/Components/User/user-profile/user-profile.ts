@@ -1,165 +1,72 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from './../../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
-
-// Define the User interface for type safety
-interface User {
-  user_id: string;
-  username: string;
-  email: string;
-  phone_number: string;
-  address: string;
-  role: string;
-  last_login: string;
-  created_at: string;
-  password?: string; // <-- add password since we need it for validation
-}
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { FirebaseService } from '../../../services/firebase.service';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, RouterModule, FormsModule], // Add necessary modules
-  templateUrl: './user-profile.html', // Updated to match Angular convention
-  styleUrls: ['./user-profile.scss'] // Updated to match Angular convention
+  imports: [CommonModule, FormsModule],
+  templateUrl: './user-profile.html',
+  styleUrls: ['./user-profile.scss']
 })
-
 export class UserProfile implements OnInit {
-  apiUrl = 'https://android.cloudapp.ind.in/cloth_store/users/users_list/2020';
-  editUrl = 'https://android.cloudapp.ind.in/cloth_store/users/edit_users';
+  user: any = {};
+  isEditing = false;
+  safeProfilePic!: SafeUrl;
 
-  user: User | null = null;
-  isEditing: boolean = false;
-  isChangingPassword: boolean = false;
+  constructor(private firebaseService: FirebaseService, private sanitizer: DomSanitizer) {}
 
-  oldPassword: string = '';
-  newPassword: string = '';
-  confirmPassword: string = '';
-  message = '';
-  success = false;
+  async ngOnInit() {
+    const authUser = await this.firebaseService.getCurrentUser();
 
-  constructor(
-    private http: HttpClient,
-    private auth: AuthService,
-    private router: Router
-  ) {}
+    if (authUser) {
+      this.user.uid = authUser.uid;
+      this.user.name = authUser.displayName || '';
+      this.user.email = authUser.email || '';
+      this.user.profilePic = authUser.photoURL || '';
 
-  ngOnInit(): void {
-    const loggedInUser = this.auth.getUser();
-    if (loggedInUser && loggedInUser.email) {
-      this.http.get<User[]>(this.apiUrl).subscribe({
-        next: (users) => {
-          this.user = users.find((u) => u.email === loggedInUser.email) || null;
-        },
-        error: (err) => {
-          console.error('Failed to fetch user data:', err);
-          this.user = null;
-        }
-      });
-    }
-  }
+      // Sanitize the photo URL
+      this.safeProfilePic = this.user.profilePic
+        ? this.sanitizer.bypassSecurityTrustUrl(this.user.profilePic)
+        : 'assets/default-avatar.png';
 
-  // --- PROFILE EDIT ---
-  editProfile(): void {
-    this.isEditing = true;
-    this.isChangingPassword = false;
-  }
+      // Fetch Firestore profile
+      const profile = await this.firebaseService.getUserProfile(authUser.uid);
 
-  saveProfile(): void {
-    if (!this.user) return;
-
-    this.http.post(this.editUrl, {
-      ...this.user,
-      shop_code: '2020'
-    }).subscribe({
-      next: () => {
-        alert('Profile updated successfully!');
-        this.isEditing = false;
-      },
-      error: (err) => {
-        console.error('Update failed', err);
-        alert('Failed to update profile.');
-      }
-    });
-  }
-
-  cancelEdit(): void {
-    this.isEditing = false;
-  }
-
-  // --- CHANGE PASSWORD ---
-  changePassword(): void {
-    if (this.newPassword !== this.confirmPassword) {
-      this.message = 'New password and confirm password do not match.';
-      this.success = false;
-      return;
-    }
-
-    if (!this.user) return;
-
-    // Step 1: Fetch existing user details
-    this.http.get<User[]>(this.apiUrl).subscribe({
-      next: (users) => {
-        const currentUser = users.find(u => u.user_id === this.user?.user_id);
-
-        if (!currentUser) {
-          this.message = 'User not found!';
-          this.success = false;
-          return;
-        }
-
-        // Step 2: Verify old password manually
-        if (currentUser.password !== this.oldPassword) {
-          this.message = 'Old password is incorrect!';
-          this.success = false;
-          return;
-        }
-
-        // Step 3: Call edit API with new password
-        const updatedUser = { ...this.user, password: this.newPassword, shop_code: '2020' };
-
-        this.http.post(this.editUrl, updatedUser).subscribe({
-          next: () => {
-            this.message = 'Password changed successfully!';
-            this.success = true;
-            this.oldPassword = '';
-            this.newPassword = '';
-            this.confirmPassword = '';
-            this.isChangingPassword = false;
+      if (profile) {
+        this.user = { ...this.user, ...profile };
+      } else {
+        // Create new profile if none exists
+        const newProfile = {
+          name: this.user.name,
+          email: this.user.email,
+          phone: '',
+          address: {
+            pincode: '',
+            locality: '',
+            city: '',
+            state: '',
+            country: '',
+            landmark: ''
           },
-          error: () => {
-            this.message = 'Error changing password.';
-            this.success = false;
-          }
-        });
-      },
-      error: () => {
-        this.message = 'Error verifying old password.';
-        this.success = false;
+          memberSince: new Date().toISOString()
+        };
+        await this.firebaseService.updateUserProfile(authUser.uid, newProfile);
+        this.user = { ...this.user, ...newProfile };
       }
-    });
+    }
   }
 
-  cancelPassword(): void {
-    this.isChangingPassword = false;
-    this.oldPassword = '';
-    this.newPassword = '';
-    this.confirmPassword = '';
+  enableEdit() {
+    this.isEditing = true;
   }
 
-  // --- NAVIGATION ---
-  goHome(): void {
-    this.router.navigate(['/UserDashboard/']); // <-- go to user home
+  async saveProfile() {
+    await this.firebaseService.updateUserProfile(this.user.uid, this.user);
+    this.isEditing = false;
+    alert('Profile updated successfully!');
   }
-goUserProfile(): void {
-    this.router.navigate(['/UserDashboard/UserProfile']); // <-- go to user home
-  }
-  logout(): void {
-    localStorage.removeItem('authToken');
-    this.router.navigate(['/login']);
-  }
-  
-
 }
+

@@ -1,125 +1,152 @@
-// src/app/routes.ts
-
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login';
-import { AuthGuard } from './core/services/auth-guard';
+import { AuthGuard } from './services/auth.guard';
+
+// Components
 import { Home } from './Components/Home/home/home';
-import { Signup } from './auth/signup/signup';
-import { ForgotPassword } from './auth/forgot-password/forgot-password';
+import { HomeDashboard } from './Components/Home/home-dashboard/home-dashboard';
 import { UserDashboard } from './Components/User/user-dashboard/user-dashboard';
-import { AdminDashboard } from './Components/Admin/admin-dashboard/admin-dashboard';
+import { Storelogin } from './Components/Store/storelogin/storelogin';
+import { Userlogin } from './Components/Home/userlogin/userlogin';
+import { Storedashboard } from './Components/Store/storedashboard/storedashboard';
+
 export const routes: Routes = [
+
+  // Public home
   {
     path: '',
     component: Home,
     pathMatch: 'full',
   },
+
+  // Login page
   {
     path: 'login',
-    component: LoginComponent,
+    component: Userlogin,
+    pathMatch: 'full',
+  },
+   // Login page
+  {
+    path: 'Storelogin',
+    component: Storelogin,
     pathMatch: 'full',
   },
 
+  // Home Dashboard + its children
   {
-    path: 'Signup',
-    component: Signup,
-    pathMatch: 'full',
-  },
-  {
-    path: 'forgot-password',
-    component: ForgotPassword,
-    pathMatch: 'full',
-  },
-{
-  path: 'UserDashboard',
-  component: UserDashboard,
-  canActivateChild: [AuthGuard],   // or canActivate if you prefer
-  children: [
-    {
-      path: '',
-      loadComponent: () =>
-        import('./Components/User/user-home/user-home').then(m => m.UserHome)
-    },
-    {
-      path: 'UserProfile',
-      loadComponent: () =>
-        import('./Components/User/user-profile/user-profile').then(m => m.UserProfile)
-    },
-    
-  ]
-}
-,
-{
-  path: 'AdminDashboard',
-  component: AdminDashboard,
-  canActivateChild: [AuthGuard],   // or canActivate if you prefer
-  children: [
-    {
-      path: '',
-      loadComponent: () =>
-        import('./Components/Admin/admin-home/admin-home').then(m => m.AdminHome)
-    },
-    {
-      path: 'AdminProfile',
-      loadComponent: () =>
-        import('./Components/Admin/admin-profile/admin-profile').then(m => m.AdminProfile)
-    },
-     {
-      path: 'AdminCategory',
-      loadComponent: () =>
-        import('./Components/Admin/admin-category/admin-category').then(m => m.AdminCategory)
-    },
-     {
-      path: 'AdminProduct',
-      loadComponent: () =>
-        import('./Components/Admin/admin-product/admin-product').then(m => m.AdminProduct)
-    },
-    {
-      path: 'AdminColor',
-      loadComponent: () =>
-        import('./Components/Admin/admin-color/admin-color').then(m => m.AdminColor)
-    },
-     {
-      path: 'AdminSize',
-      loadComponent: () =>
-        import('./Components/Admin/admin-size/admin-size').then(m => m.AdminSize)
-    },
-     {
-      path: 'AdminProductVariant',
-      loadComponent: () =>
-        import('./Components/Admin/admin-product-variant/admin-product-variant').then(m => m.AdminProductVariant)
-    },
-     {
-      path: 'AdminDeliveryLocation',
-      loadComponent: () =>
-        import('./Components/Admin/admin-delivery-location/admin-delivery-location').then(m => m.AdminDeliveryLocation)
-    },
+    path: 'HomeDashboard',
+    component: HomeDashboard,
+    children: [
       {
-      path: 'AdminProductImage',
-      loadComponent: () =>
-        import('./Components/Admin/admin-product-image/admin-product-image').then(m => m.AdminProductImage)
-    },
-     {
-      path: 'AdminDeliveryTracking',
-      loadComponent: () =>
-        import('./Components/Admin/admin-delivery-tracking/admin-delivery-tracking').then(m => m.AdminDeliveryTracking)
-    },
-     {
-      path: 'AdminInquiryReplies',
-      loadComponent: () =>
-        import('./Components/Admin/admin-inquiry-replies/admin-inquiry-replies').then(m => m.AdminInquiryReplies)
-    },
-     {
-      path: 'AdminStoreDetails',
-      loadComponent: () =>
-        import('./Components/Admin/admin-store-details/admin-store-details').then(m => m.AdminStoreDetails)
-    },
-  ]
-},
+        path: 'AboutUs',
+        loadComponent: () =>
+          import('./Components/Home/store-details/store-details').then(m => m.StoreDetails),
+      },
+      {
+        path: 'Blog',
+        loadComponent: () =>
+          import('./Components/Home/blog/blog').then(m => m.Blog),
+      },
+      {
+        path: 'Product',
+        loadComponent: () =>
+          import('./Components/Home/product/product').then(m => m.Product),
+      },
+      {
+        path: 'YoutubeVideo',
+        loadComponent: () =>
+          import('./Components/Home/youtube-video/youtube-video').then(m => m.YoutubeVideo),
+      },
+      {
+        path: 'FacebookPage',
+        loadComponent: () =>
+          import('./Components/Home/facebook-page/facebook-page').then(m => m.FacebookPage),
+      },
+      {
+        path: 'HowWeWork',
+        loadComponent: () =>
+          import('./Components/Home/how-we-work/how-we-work').then(m => m.HowWeWork),
+      },
+      {
+        path: 'GiftCard',
+        loadComponent: () =>
+          import('./Components/Home/gift-card/gift-card').then(m => m.GiftCard),
+      },
+      {
+        path: 'Help',
+        loadComponent: () =>
+          import('./Components/Home/help/help').then(m => m.Help),
+      },
+      
+    ],
+  },
+
+  // ✅ Protected User Dashboard (separate route, not inside HomeDashboard)
+  {
+    path: 'UserDashboard',
+    component: UserDashboard,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./Components/User/user-home/user-home').then(m => m.UserHome),
+      },
+      {
+        path: 'UserProfile',
+        loadComponent: () =>
+          import('./Components/User/user-profile/user-profile').then(m => m.UserProfile),
+      },
+       {
+        path: 'AddStore',
+        loadComponent: () =>
+          import('./Components/Admin/store/store').then(m => m.Store),
+      },
+       {
+        path: 'AddProduct',
+        loadComponent: () =>
+          import('./Components/Admin/product/product').then(m => m.Product),
+      },
+    ],
+  },
 
 
+  // ✅ Protected User Dashboard (separate route, not inside HomeDashboard)
+  {
+    path: 'StoreDashboard',
+    component: Storedashboard,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./Components/Store/store-list/store-list').then(m => m.StoreList),
+      },
+      {
+        path: 'UserProfile',
+        loadComponent: () =>
+          import('./Components/User/user-profile/user-profile').then(m => m.UserProfile),
+      },
+       {
+        path: 'AddStore',
+        loadComponent: () =>
+          import('./Components/Store/addstore/addstore').then(m => m.Addstore),
+      },
+       {
+        path: 'AddProduct',
+        loadComponent: () =>
+          import('./Components/Admin/product/product').then(m => m.Product),
+      },
+    ],
+  },
+
+
+
+
+
+  // Wildcard (redirect to home)
   {
     path: '**',
     redirectTo: '',
   },
 ];
+

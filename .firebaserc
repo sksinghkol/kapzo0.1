@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "kapzo-a7705"
-  }
+    "default": "kapzo01"
+  },
+  "targets": {},
+  "etags": {}
 }

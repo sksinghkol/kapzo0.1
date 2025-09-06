@@ -1,0 +1,21 @@
+<div class="product-form">
+  <label>Store ID:</label>
+  <input type="text" [(ngModel)]="storeId" placeholder="Store ID"/>
+
+  <label>Product Name:</label>
+  <input type="text" [(ngModel)]="productName" placeholder="Product Name"/>
+
+  <label>Category:</label>
+  <input type="text" [(ngModel)]="productCategory" placeholder="Category"/>
+
+  <label>Colors (comma separated):</label>
+  <input type="text" [(ngModel)]="productColors" placeholder="e.g. Red, Blue, Green"/>
+
+  <label>Price:</label>
+  <input type="number" [(ngModel)]="price" placeholder="Price"/>
+
+  <label>Images:</label>
+  <input type="file" multiple (change)="onProductImagesSelected($event)"/>
+
+  <button (click)="saveProduct()">Save Product</button>
+</div>

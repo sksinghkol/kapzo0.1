@@ -1,0 +1,12 @@
+<div *ngIf="loading" class="text-center p-5">
+  <div class="spinner-border text-primary" role="status"></div>
+  <p>Redirecting...</p>
+</div>
+
+<div class="card login-card shadow-lg text-center p-4">
+  <h2>Store Login</h2>
+  <button class="btn btn-danger mt-3 w-50" (click)="loginWithGoogle()">
+    Login with Google
+  </button>
+  <p class="text-danger mt-2">{{ error }}</p>
+</div>

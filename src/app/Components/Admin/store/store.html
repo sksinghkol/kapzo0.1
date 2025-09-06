@@ -1,0 +1,26 @@
+<div class="store-form">
+  <h2>Create Store</h2>
+
+  <label>Store Name:</label>
+  <input type="text" [(ngModel)]="storeName" />
+
+  <label>Owner Name:</label>
+  <input type="text" [(ngModel)]="ownerName" />
+
+  <label>Owner Photo:</label>
+  <input type="file" (change)="onOwnerPhotoSelected($event)" />
+
+  <label>Address:</label>
+  <input type="text" [(ngModel)]="address" />
+
+  <label>Home Delivery:</label>
+  <input type="checkbox" [(ngModel)]="homeDelivery" />
+
+  <label>Delivery Locations (comma separated):</label>
+  <input type="text" [(ngModel)]="deliveryLocations" />
+
+  <label>Store Images:</label>
+  <input type="file" (change)="onStoreImagesSelected($event)" multiple />
+
+  <button (click)="saveStore()">Save Store</button>
+</div>
