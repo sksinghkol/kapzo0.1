@@ -10,6 +10,17 @@ interface Address {
   landmark: string;
 }
 
+export interface StoreUser {
+  name: string;
+  email: string;
+  phone: string;
+  address: Address;
+  memberSince: string;
+  roles: string[];
+  status: string;
+  products: any[];
+}
+
 interface Profile {
   name: string;
   email: string;
@@ -216,4 +227,50 @@ async uploadFile(path: string, file: File): Promise<string | null> {
     return null;
   }
 }
+
+  // Create or Update Store User
+  async createOrUpdateStoreUser(uid: string, data: StoreUser): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) {
+      console.warn('createOrUpdateStoreUser skipped: Not in browser context');
+      return;
+    }
+    try {
+      const { getFirestore, doc, setDoc } = await import('firebase/firestore');
+      const app = await this.getFirebaseApp();
+      if (!app) {
+        throw new Error('Firebase app not initialized');
+      }
+      const db = getFirestore(app);
+      const docRef = doc(db, 'store_users', uid);
+      
+      await setDoc(docRef, data, { merge: true });
+      console.log('Store user profile updated successfully for UID:', uid);
+    } catch (err) {
+      console.error('Firestore store user update error:', err);
+      throw err;
+    }
+  }
+
+  // Create or Update Store
+  async createOrUpdateStore(uid: string, data: any): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) {
+      console.warn('createOrUpdateStore skipped: Not in browser context');
+      return;
+    }
+    try {
+      const { getFirestore, doc, setDoc } = await import('firebase/firestore');
+      const app = await this.getFirebaseApp();
+      if (!app) {
+        throw new Error('Firebase app not initialized');
+      }
+      const db = getFirestore(app);
+      const docRef = doc(db, 'stores', uid);
+      
+      await setDoc(docRef, data, { merge: true });
+      console.log('Store details updated successfully for UID:', uid);
+    } catch (err) {
+      console.error('Firestore store update error:', err);
+      throw err;
+    }
+  }
 }
