@@ -1,0 +1,200 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">My Watchlists</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWatchlistModal">
+          <i class="bi bi-plus-circle me-2"></i>Create New Watchlist
+        </button>
+      </div>
+
+      <!-- City Selection -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Select Your City:</label>
+              <select class="form-select" [(ngModel)]="selectedCity" (change)="onCityChange()">
+                <option value="">Choose a city...</option>
+                <option *ngFor="let city of availableCities" [value]="city">{{ city }}</option>
+              </select>
+            </div>
+            <div class="col-md-6" *ngIf="selectedCity">
+              <p class="mb-0 text-muted">
+                <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                Showing stores available in <strong>{{ selectedCity }}</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Watchlists Grid -->
+      <div class="row" *ngIf="watchlists.length > 0; else noWatchlists">
+        <div class="col-lg-4 col-md-6 mb-4" *ngFor="let watchlist of watchlists">
+          <div class="card h-100 shadow-sm">
+            <div class="card-header bg-light">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">{{ watchlist.name }}</h5>
+                <span class="badge bg-primary">{{ watchlist.items.length }} items</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <p class="text-muted small mb-3">
+                Created: {{ watchlist.createdAt | date:'short' }}
+              </p>
+              
+              <!-- Preview of items -->
+              <div class="mb-3" *ngIf="watchlist.items.length > 0">
+                <small class="text-muted">Recent items:</small>
+                <ul class="list-unstyled mt-2">
+                  <li *ngFor="let item of watchlist.items.slice(0, 3)" class="small">
+                    • {{ getProductName(item.productId) }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent">
+              <div class="btn-group w-100" role="group">
+                <button class="btn btn-outline-primary btn-sm" (click)="viewWatchlist(watchlist.id)">
+                  <i class="bi bi-eye me-1"></i>View
+                </button>
+                <button class="btn btn-outline-success btn-sm" (click)="requestService(watchlist.id)">
+                  <i class="bi bi-calendar-check me-1"></i>Request Service
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noWatchlists>
+        <div class="text-center py-5">
+          <i class="bi bi-heart display-1 text-muted"></i>
+          <h4 class="mt-3 text-muted">No Watchlists Yet</h4>
+          <p class="text-muted">Create your first watchlist to start adding products you're interested in.</p>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWatchlistModal">
+            <i class="bi bi-plus-circle me-2"></i>Create Your First Watchlist
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- Create Watchlist Modal -->
+<div class="modal fade" id="createWatchlistModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create New Watchlist</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createWatchlist()" #watchlistForm="ngForm">
+          <div class="mb-3">
+            <label class="form-label">Watchlist Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="newWatchlistName" 
+              name="name"
+              placeholder="e.g., Electronics Wishlist, Home Decor Ideas"
+              required>
+          </div>
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!newWatchlistName.trim()">
+              Create Watchlist
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Service Request Modal -->
+<div class="modal fade" id="serviceRequestModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Request Service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="submitServiceRequest()" #serviceForm="ngForm">
+          <div class="mb-3">
+            <label class="form-label">Service Type</label>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card service-option" [class.selected]="selectedServiceType === 'quick_service'" 
+                     (click)="selectedServiceType = 'quick_service'">
+                  <div class="card-body text-center">
+                    <i class="bi bi-lightning-charge display-6 text-warning"></i>
+                    <h6 class="mt-2">Quick Service</h6>
+                    <small class="text-muted">Within 10 minutes</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card service-option" [class.selected]="selectedServiceType === 'home_visit'" 
+                     (click)="selectedServiceType = 'home_visit'">
+                  <div class="card-body text-center">
+                    <i class="bi bi-house display-6 text-primary"></i>
+                    <h6 class="mt-2">Home Visit</h6>
+                    <small class="text-muted">Scheduled time</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card service-option" [class.selected]="selectedServiceType === 'shop_visit'" 
+                     (click)="selectedServiceType = 'shop_visit'">
+                  <div class="card-body text-center">
+                    <i class="bi bi-shop display-6 text-success"></i>
+                    <h6 class="mt-2">Shop Visit</h6>
+                    <small class="text-muted">Visit store</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3" *ngIf="selectedServiceType !== 'quick_service'">
+            <label class="form-label">Preferred Date & Time</label>
+            <input type="datetime-local" class="form-control" [(ngModel)]="scheduledTime" name="scheduledTime">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Your Address</label>
+            <div class="row">
+              <div class="col-md-6 mb-2">
+                <input type="text" class="form-control" [(ngModel)]="customerAddress.locality" 
+                       name="locality" placeholder="Locality" required>
+              </div>
+              <div class="col-md-6 mb-2">
+                <input type="text" class="form-control" [(ngModel)]="customerAddress.city" 
+                       name="city" placeholder="City" required>
+              </div>
+              <div class="col-md-6 mb-2">
+                <input type="text" class="form-control" [(ngModel)]="customerAddress.pincode" 
+                       name="pincode" placeholder="Pincode" required>
+              </div>
+              <div class="col-md-6 mb-2">
+                <input type="text" class="form-control" [(ngModel)]="customerAddress.landmark" 
+                       name="landmark" placeholder="Landmark (Optional)">
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!selectedServiceType">
+              Submit Request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

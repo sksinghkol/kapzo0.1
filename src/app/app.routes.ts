@@ -106,6 +106,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./Components/Admin/product/product').then(m => m.Product),
       },
+      {
+        path: 'watchlist',
+        loadComponent: () =>
+          import('./Components/User/watchlist/watchlist').then(m => m.WatchlistComponent),
+      },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./Components/User/product-browser/product-browser').then(m => m.ProductBrowserComponent),
+      },
     ],
   },
 
@@ -149,4 +159,3 @@ export const routes: Routes = [
     redirectTo: '',
   },
 ];
-
