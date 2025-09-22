@@ -94,11 +94,13 @@ export class WatchlistComponent implements OnInit {
       this.newWatchlistName = '';
       await this.loadWatchlists();
       
-      // Close modal
-      const modal = document.getElementById('createWatchlistModal');
-      if (modal) {
-        const bsModal = bootstrap.Modal.getInstance(modal);
-        if (bsModal) bsModal.hide();
+      // Close modal (only in browser)
+      if (typeof document !== 'undefined' && typeof bootstrap !== 'undefined') {
+        const modal = document.getElementById('createWatchlistModal');
+        if (modal) {
+          const bsModal = bootstrap.Modal.getInstance(modal);
+          if (bsModal) bsModal.hide();
+        }
       }
       
       // Navigate to the new watchlist
@@ -115,9 +117,14 @@ export class WatchlistComponent implements OnInit {
     this.selectedServiceType = '';
     this.scheduledTime = '';
     
-    // Show service request modal
-    const modal = new bootstrap.Modal(document.getElementById('serviceRequestModal'));
-    modal.show();
+    // Show service request modal (only in browser)
+    if (typeof document !== 'undefined' && typeof bootstrap !== 'undefined') {
+      const modalEl = document.getElementById('serviceRequestModal');
+      if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      }
+    }
   }
 
   async submitServiceRequest() {
@@ -140,11 +147,13 @@ export class WatchlistComponent implements OnInit {
     );
 
     if (requestId) {
-      // Close modal
-      const modal = document.getElementById('serviceRequestModal');
-      if (modal) {
-        const bsModal = bootstrap.Modal.getInstance(modal);
-        if (bsModal) bsModal.hide();
+      // Close modal (only in browser)
+      if (typeof document !== 'undefined' && typeof bootstrap !== 'undefined') {
+        const modal = document.getElementById('serviceRequestModal');
+        if (modal) {
+          const bsModal = bootstrap.Modal.getInstance(modal);
+          if (bsModal) bsModal.hide();
+        }
       }
 
       alert('Service request submitted successfully!');

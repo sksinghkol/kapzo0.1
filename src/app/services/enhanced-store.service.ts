@@ -215,7 +215,7 @@ export class EnhancedStoreService {
       snapshot.docs.forEach(doc => {
         const store = doc.data() as Store;
         if (store.deliveryLocations) {
-          store.deliveryLocations.forEach(city => citiesSet.add(city));
+          store.deliveryLocations.forEach((city: string) => citiesSet.add(city));
         }
       });
       

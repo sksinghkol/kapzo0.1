@@ -29,8 +29,8 @@ export class ProductBrowserComponent implements OnInit {
   searchTerm: string = '';
   filters = {
     category: '',
-    minPrice: null as number | null,
-    maxPrice: null as number | null
+    minPrice: undefined as number | undefined,
+    maxPrice: undefined as number | undefined
   };
 
   // Watchlist modal
@@ -98,7 +98,9 @@ export class ProductBrowserComponent implements OnInit {
         // Load all products from stores in the city
         const allProducts: Product[] = [];
         for (const store of this.stores) {
-          const storeProducts = await this.storeService.getProductsByStore(store.id, this.filters);
+          const sid = store.id ?? (store as any).storeId;
+          if (!sid) continue; // skip if no id
+          const storeProducts = await this.storeService.getProductsByStore(sid, this.filters);
           allProducts.push(...storeProducts);
         }
         this.products = allProducts;
@@ -138,8 +140,8 @@ export class ProductBrowserComponent implements OnInit {
     this.searchTerm = '';
     this.filters = {
       category: '',
-      minPrice: null,
-      maxPrice: null
+      minPrice: undefined,
+      maxPrice: undefined
     };
     this.loadProducts();
   }
@@ -160,9 +162,14 @@ export class ProductBrowserComponent implements OnInit {
       this.selectedSize = '';
       this.selectedQuantity = 1;
       this.itemNotes = '';
-      
-      const modal = new bootstrap.Modal(document.getElementById('addToWatchlistModal'));
-      modal.show();
+      // Only access DOM in browser
+      if (typeof document !== 'undefined' && typeof bootstrap !== 'undefined') {
+        const modalEl = document.getElementById('addToWatchlistModal');
+        if (modalEl) {
+          const modal = new bootstrap.Modal(modalEl);
+          modal.show();
+        }
+      }
     }
   }
 
@@ -181,10 +188,12 @@ export class ProductBrowserComponent implements OnInit {
 
     if (success) {
       // Close modal
-      const modal = document.getElementById('addToWatchlistModal');
-      if (modal) {
-        const bsModal = bootstrap.Modal.getInstance(modal);
-        if (bsModal) bsModal.hide();
+      if (typeof document !== 'undefined' && typeof bootstrap !== 'undefined') {
+        const modalEl = document.getElementById('addToWatchlistModal');
+        if (modalEl) {
+          const bsModal = bootstrap.Modal.getInstance(modalEl);
+          if (bsModal) bsModal.hide();
+        }
       }
 
       // Refresh watchlist data

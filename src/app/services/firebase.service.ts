@@ -1,5 +1,6 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
 interface Address {
   pincode: string;
@@ -8,6 +9,8 @@ interface Address {
   country: string;
   locality: string;
   landmark: string;
+  // Optional full address line
+  addressLine?: string;
 }
 
 export interface StoreUser {
@@ -35,6 +38,9 @@ interface Profile {
 export class FirebaseService {
   private auth: any;
   private platformId = inject(PLATFORM_ID);
+  private authListenerSet = false;
+  private authStateSubject = new BehaviorSubject<any>(null);
+  public authState$ = this.authStateSubject.asObservable();
 
   // Initialize Firebase App
   private async getFirebaseApp() {
@@ -64,6 +70,18 @@ export class FirebaseService {
       }
       const { getAuth } = await import('firebase/auth');
       this.auth = getAuth(app);
+      // wire up auth state listener once
+      if (!this.authListenerSet) {
+        try {
+          const { onAuthStateChanged } = await import('firebase/auth');
+          onAuthStateChanged(this.auth, (user: any) => {
+            this.authStateSubject.next(user || null);
+          });
+          this.authListenerSet = true;
+        } catch (err) {
+          console.warn('Failed to set auth listener', err);
+        }
+      }
     }
     return this.auth;
   }
@@ -163,14 +181,14 @@ export class FirebaseService {
       // Check if document exists
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        // Update existing document
-        await updateDoc(docRef, {
+        // Use merge to update only provided fields (preserve existing fields)
+        await setDoc(docRef, {
           name: data.name,
           email: data.email,
           phone: data.phone,
           address: data.address,
           memberSince: data.memberSince,
-        });
+        }, { merge: true });
       } else {
         // Create new document
         await setDoc(docRef, data);

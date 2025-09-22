@@ -47,7 +47,7 @@
             <label class="form-label fw-semibold">Store</label>
             <select class="form-select" [(ngModel)]="selectedStoreId" (change)="onStoreChange()">
               <option value="">All Stores</option>
-              <option *ngFor="let store of stores" [value]="store.id">{{ store.name }}</option>
+              <option *ngFor="let store of stores" [value]="store.id">{{ store.storeName }}</option>
             </select>
           </div>
 
@@ -168,17 +168,17 @@
           </select>
         </div>
 
-        <div class="mb-3" *ngIf="selectedProduct?.colors.length > 0">
+  <div class="mb-3" *ngIf="selectedProduct && selectedProduct.colors && selectedProduct.colors.length > 0">
           <label class="form-label">Preferred Color</label>
-          <select class="form-select" [(ngModel)]="selectedColor">
+            <select class="form-select" [(ngModel)]="selectedColor">
             <option value="">Any color</option>
             <option *ngFor="let color of selectedProduct.colors" [value]="color">{{ color }}</option>
           </select>
         </div>
 
-        <div class="mb-3" *ngIf="selectedProduct?.sizes.length > 0">
+  <div class="mb-3" *ngIf="selectedProduct && selectedProduct.sizes && selectedProduct.sizes.length > 0">
           <label class="form-label">Preferred Size</label>
-          <select class="form-select" [(ngModel)]="selectedSize">
+            <select class="form-select" [(ngModel)]="selectedSize">
             <option value="">Any size</option>
             <option *ngFor="let size of selectedProduct.sizes" [value]="size">{{ size }}</option>
           </select>

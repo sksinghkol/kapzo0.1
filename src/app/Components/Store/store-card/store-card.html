@@ -1,0 +1,12 @@
+<div class="store-card card">
+  <img [src]="primaryImage" class="card-img-top store-img" alt="Store image">
+  <div class="card-body">
+    <h5 class="card-title">{{ store.storeName }} <small class="text-muted">{{ store.storeSlug }}</small></h5>
+    <p class="card-text">{{ store.description }}</p>
+    <p class="mb-1"><strong>Contact:</strong> {{ store.contact?.phone }} | {{ store.contact?.email }}</p>
+    <p class="mb-1"><strong>Address:</strong> {{ store.address?.fullAddress }}, {{ store.address?.city }} - {{ store.address?.pincode }}</p>
+    <p class="mb-1"><strong>Categories:</strong> {{ store.categories?.join(', ') }}</p>
+    <p class="mb-1"><strong>Deals In:</strong> {{ store.dealsIn?.join(', ') }}</p>
+    <p class="mb-1"><strong>Subscription:</strong> {{ subscriptionStatus }}</p>
+  </div>
+</div>

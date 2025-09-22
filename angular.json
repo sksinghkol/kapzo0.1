@@ -23,7 +23,10 @@
             ],
             "allowedCommonJsDependencies": [
               "quill",
-              "quill-delta"
+              "quill-delta",
+              "undici",
+              "@grpc/grpc-js",
+              "@grpc/proto-loader"
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",

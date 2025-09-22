@@ -1,1 +1,65 @@
-<p>addstore works!</p>
+<div class="add-store-card card p-3">
+	<h4>Add Store</h4>
+	<div class="row g-2">
+		<div class="col-md-6">
+			<label class="form-label">Store Name</label>
+			<input class="form-control" [(ngModel)]="store.storeName" name="storeName">
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">Store Slug</label>
+			<input class="form-control" [(ngModel)]="store.storeSlug" name="storeSlug">
+		</div>
+		<div class="col-12">
+			<label class="form-label">Description</label>
+			<textarea class="form-control" rows="3" [(ngModel)]="store.description" name="description"></textarea>
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">Contact Phone</label>
+			<input class="form-control" [(ngModel)]="store.contact.phone" name="phone">
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">Contact Email</label>
+			<input class="form-control" [(ngModel)]="store.contact.email" name="email">
+		</div>
+		<div class="col-12">
+			<label class="form-label">Full Address</label>
+			<textarea class="form-control" rows="2" [(ngModel)]="store.address.fullAddress" name="fullAddress"></textarea>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label">City</label>
+			<input class="form-control" [(ngModel)]="store.address.city" name="city">
+		</div>
+		<div class="col-md-4">
+			<label class="form-label">State</label>
+			<input class="form-control" [(ngModel)]="store.address.state" name="state">
+		</div>
+		<div class="col-md-4">
+			<label class="form-label">Pincode</label>
+			<input class="form-control" [(ngModel)]="store.address.pincode" name="pincode">
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">Image URL</label>
+			<div class="d-flex gap-2">
+				<input class="form-control" [(ngModel)]="imageInput" name="imageInput">
+				<button type="button" class="btn btn-secondary" (click)="addImage()">Add</button>
+			</div>
+			<div class="mt-2">
+				<div *ngFor="let img of store.images; let i = index" class="d-flex align-items-center gap-2">
+					<img [src]="img" width="80">
+					<button type="button" class="btn btn-sm btn-danger" (click)="removeImage(i)">Remove</button>
+				</div>
+			</div>
+		</div>
+			<div class="col-md-6">
+				<label class="form-label">Categories (comma separated)</label>
+				<input class="form-control" [(ngModel)]="categoriesString" name="categories" (change)="onCategoriesChange()">
+			</div>
+			<div class="col-md-6">
+				<label class="form-label">Deals In (comma separated)</label>
+				<input class="form-control" [(ngModel)]="dealsInString" name="dealsIn" (change)="onDealsInChange()">
+			</div>
+	</div>
+	<div class="mt-3 d-flex gap-2 justify-content-end">
+		<button class="btn btn-primary" (click)="save()">Save Store</button>
+	</div>
+</div>

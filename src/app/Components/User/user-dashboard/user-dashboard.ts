@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { UserMenu } from '../user-menu/user-menu';
 
 @Component({
   selector: 'app-user-dashboard',
-  imports: [RouterOutlet,UserMenu],
+  imports: [RouterOutlet],
   templateUrl: './user-dashboard.html',
   styleUrl: './user-dashboard.scss'
 })

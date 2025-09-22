@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { Storemenu } from '../storemenu/storemenu';
+import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-storedashboard',
-  imports: [ RouterOutlet, Storemenu],
+  imports: [ RouterOutlet],
   templateUrl: './storedashboard.html',
   styleUrl: './storedashboard.scss'
 })

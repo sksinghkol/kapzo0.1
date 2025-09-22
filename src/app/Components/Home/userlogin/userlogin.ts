@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from '../../../services/firebase.service';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -16,11 +16,14 @@ export class Userlogin implements OnInit {
   error = '';
   loading = true;
 
-  constructor(private fb: FirebaseService, private router: Router) {}
+  private returnUrl: string | null = null;
+  constructor(private fb: FirebaseService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
+    // capture returnUrl if provided by AuthGuard
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
     this.fb.getCurrentUser().then(user => {
-      if (user) this.router.navigate(['/UserDashboard']);
+      if (user) this.router.navigate([this.returnUrl || '/UserDashboard']);
       this.loading = false;
     }).catch(() => {
       this.loading = false;
@@ -61,7 +64,15 @@ export class Userlogin implements OnInit {
         return;
       }
 
-      this.router.navigate(['/UserDashboard']);
+      // Wait reactively for authState$ to emit a non-null user (timeout ignored here)
+      try {
+        const { firstValueFrom } = await import('rxjs');
+        const { filter } = await import('rxjs/operators');
+        await firstValueFrom(this.fb.authState$.pipe(filter((u: any) => !!u)));
+      } catch (e) {
+        // proceed regardless
+      }
+  this.router.navigate([this.returnUrl || '/UserDashboard']);
 
     } catch (err: any) {
       this.error = err.message || 'Login failed';
@@ -98,7 +109,14 @@ export class Userlogin implements OnInit {
         return;
       }
 
-      this.router.navigate(['/UserDashboard']);
+      try {
+        const { firstValueFrom } = await import('rxjs');
+        const { filter } = await import('rxjs/operators');
+        await firstValueFrom(this.fb.authState$.pipe(filter((u: any) => !!u)));
+      } catch (e) {
+        // ignore and continue
+      }
+  this.router.navigate([this.returnUrl || '/UserDashboard']);
     } catch (err: any) {
       this.error = err.message || 'Google login failed';
     } finally {

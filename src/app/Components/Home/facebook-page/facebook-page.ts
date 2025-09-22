@@ -11,20 +11,22 @@ declare var FB: any;
 export class FacebookPage implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
-    if (!document.getElementById('facebook-jssdk')) {
-      const script = document.createElement('script');
-      script.id = 'facebook-jssdk';
-      script.src =
-        'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0&appId=YOUR_APP_ID';
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
+    if (typeof document !== 'undefined') {
+      if (!document.getElementById('facebook-jssdk')) {
+        const script = document.createElement('script');
+        script.id = 'facebook-jssdk';
+        script.src =
+          'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0&appId=YOUR_APP_ID';
+        script.async = true;
+        script.defer = true;
+        document.body.appendChild(script);
+      }
     }
   }
 
   ngAfterViewInit(): void {
-    if (typeof FB !== 'undefined' && FB.XFBML) {
-      FB.XFBML.parse();
+    if (typeof window !== 'undefined' && typeof (window as any).FB !== 'undefined' && (window as any).FB.XFBML) {
+      (window as any).FB.XFBML.parse();
     }
   }
 }

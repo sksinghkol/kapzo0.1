@@ -1,3 +1,6 @@
+# kapzo0.1
+kapzo0.1 version for all store
+
 # ScemAdmin
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.4.

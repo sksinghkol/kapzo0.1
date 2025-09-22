@@ -7,12 +7,14 @@ export interface Address {
   country: string;
   locality: string;
   landmark: string;
+  addressLine?: string;
 }
 
 export interface User {
   uid: string;
   name: string;
   email: string;
+  profilePic?: string;
   phone: string;
   address: Address;
   memberSince: string;
@@ -22,23 +24,44 @@ export interface User {
 }
 
 export interface Store {
-  id: string;
-  ownerId: string;
-  name: string;
-  description: string;
-  category: string;
-  address: Address;
-  deliveryLocations: string[]; // Array of cities/areas they deliver to
-  images: string[];
-  rating: number;
-  totalOrders: number;
-  status: 'active' | 'inactive';
-  createdAt: string;
-  operatingHours: {
-    open: string;
-    close: string;
-    days: string[];
+  storeId: string; // auto-generated or UID
+  id?: string;
+  ownerId: string; // auth UID of seller
+  storeName: string;
+  storeSlug?: string; // for friendly URLs
+  description?: string;
+
+  contact?: {
+    phone?: string;
+    email?: string;
   };
+
+  address?: {
+    city?: string;
+    state?: string;
+    pincode?: string;
+    fullAddress?: string;
+  };
+
+  images?: string[];
+
+  // array of cities/areas the store delivers to (kept for backward compatibility)
+  deliveryLocations?: string[];
+
+  categories?: string[];
+  dealsIn?: string[]; // e.g. ["Men","Women","Kids"]
+
+  subscription?: {
+    plan?: '1_month' | '3_months' | '6_months' | '12_months';
+    startDate?: string;
+    endDate?: string;
+    status?: 'active' | 'warning' | 'expired';
+    reminderDays?: number;
+  };
+
+  status?: 'active' | 'inactive';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Product {

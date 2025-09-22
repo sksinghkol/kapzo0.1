@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FirebaseService, StoreUser } from '../../../services/firebase.service';
@@ -14,8 +14,11 @@ import { FirebaseService, StoreUser } from '../../../services/firebase.service';
 export class Storelogin {
   error = '';
   loading = false;
+  private returnUrl: string | null = null;
 
-  constructor(private fb: FirebaseService, private router: Router) {}
+  constructor(private fb: FirebaseService, private router: Router, private route: ActivatedRoute) {
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+  }
 
   // --- Google Login ---
   async loginWithGoogle() {
@@ -42,16 +45,24 @@ export class Storelogin {
 
       // Save store details in stores collection
       const storeDetails = {
-        ownerUid: authUser.uid,
-        name: storeUser.name,
+        ownerId: authUser.uid,
+        storeName: storeUser.name,
         email: storeUser.email,
         createdAt: new Date().toISOString(),
         products: []
       };
       await this.fb.createOrUpdateStore(authUser.uid, storeDetails);
 
-      // Redirect to dashboard
-      this.router.navigate(['/StoreDashboard']);
+      // Wait reactively for authState$ to emit a non-null user (timeout 5s)
+      const { firstValueFrom, timeout, filter } = await import('rxjs');
+      try {
+        await firstValueFrom(this.fb.authState$.pipe((await import('rxjs/operators')).filter((u: any) => !!u)), { defaultValue: null });
+      } catch (e) {
+        // ignore timeout/errors and continue
+      }
+
+  // Redirect to requested route or dashboard
+  this.router.navigate([this.returnUrl || '/StoreDashboard']);
     } catch (err: any) {
       console.error(err);
       this.error = err.message || 'Google login failed';

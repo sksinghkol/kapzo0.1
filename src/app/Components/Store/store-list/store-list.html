@@ -1,6 +1,6 @@
 <!-- store-list.component.html -->
 <div *ngFor="let store of stores">
-  <h2 (click)="selectStore(store.id)">{{ store.name }}</h2>
+  <h2 (click)="selectStore(store.id)">{{ store.storeName }}</h2>
 </div>
 
 <div *ngFor="let product of products">
